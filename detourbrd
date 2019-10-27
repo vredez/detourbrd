@@ -1,0 +1,27 @@
+#!/bin/sh
+# Detour UDP broadcast packages to a specific network interface using iptables.
+# Useful for playing LAN games over VPN which discover servers via UDP broadcast.
+
+USAGE="Usage: detourbrd { IFACE | reset }"
+[ $# -ne 1 ] && { echo "$USAGE" ; exit 1; }
+
+iptables -t nat -F || exit 1
+
+[ "$1" == "reset" ] && { echo "Reset UDP broadcast detour" ; exit 0; }
+
+getaddr()
+{
+    ip addr show $1 | grep -o "$2 [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"
+}
+
+IFACE=$1
+SUBNET_SOURCE=$(getaddr $IFACE inet)
+[ $? -gt 0 ] && exit 1
+SUBNET_BROADCAST=$(getaddr $IFACE brd)
+[ $? -gt 0 ] && exit 1
+
+iptables -t nat -A OUTPUT -p udp --destination 255.255.255.255 -j DNAT --to-destination $SUBNET_BROADCAST && \
+iptables -t nat -A POSTROUTING -p udp --destination $SUBNET_BROADCAST -j SNAT --to-source $SUBNET_SOURCE &&\
+iptables -t nat -L
+
+exit 0
