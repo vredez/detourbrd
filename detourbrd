@@ -3,7 +3,7 @@
 # Useful for playing LAN games over VPN which discover servers via UDP broadcast.
 
 USAGE="Usage: detourbrd { IFACE | reset }"
-[ $# -ne 1 ] && { echo "$USAGE" ; exit 1; }
+[ $# -lt 1 ] && { echo "$USAGE" ; exit 1; }
 
 iptables -t nat -F || exit 1
 
@@ -21,7 +21,7 @@ SUBNET_BROADCAST=$(getaddr $IFACE brd)
 [ $? -gt 0 ] && exit 1
 
 iptables -t nat -A OUTPUT -p udp --destination 255.255.255.255 -j DNAT --to-destination $SUBNET_BROADCAST && \
-iptables -t nat -A POSTROUTING -p udp --destination $SUBNET_BROADCAST -j SNAT --to-source $SUBNET_SOURCE &&\
+iptables -t nat -A POSTROUTING -p udp --destination $SUBNET_BROADCAST -j SNAT --to-source $SUBNET_SOURCE && \
 iptables -t nat -L
 
 exit 0
