@@ -19,8 +19,8 @@ Reset detour:
 ```
 # ...
 # Automatic UDP broadcast detour
-up "detourbrd"
-down "detourbrd reset"
+up "/usr/local/bin/detourbrd"
+down "/usr/local/bin/detourbrd reset"
 
 down-pre
 script-security 2
