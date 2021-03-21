@@ -1,8 +1,5 @@
 # detourbrd
-Detour UDP broadcast packages to a specific network interface using iptables. Useful for playing LAN games over VPN which discover servers via UDP broadcast.
-
-## Prerequesites
-```ipcalc```
+Detour UDP broadcast packages to a specific network interface using iptables. Useful for playing LAN games over VPN which discover servers via UDP broadcast. Requires ```ipcalc``` to be installed.
 
 ## Install
 ```# make install```
